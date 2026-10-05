@@ -14,35 +14,62 @@ public static class DataSeeder
     {
         await context.Database.MigrateAsync();
 
-        // 1. Seed Users if not already present
-        if (!await context.Users.AnyAsync())
+        // 1. Seed or update demo accounts so quick demo login always works
+        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == "admin@fix.com");
+        if (adminUser == null)
         {
-            var adminUser = new Users
+            adminUser = new Users
             {
-                UserName = "admin",
+                UserName = "Admin Facility Manager",
                 Email = "admin@fix.com",
                 PasswordHash = HashPassword("admin123"),
                 UserRole = UserRole.Admin.ToString()
             };
+            await context.Users.AddAsync(adminUser);
+        }
+        else
+        {
+            adminUser.PasswordHash = HashPassword("admin123");
+            adminUser.UserRole = UserRole.Admin.ToString();
+        }
 
-            var technicianUser = new Users
+        var technicianUser = await context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == "technician@fix.com");
+        if (technicianUser == null)
+        {
+            technicianUser = new Users
             {
-                UserName = "technician",
+                UserName = "Alex Rivera (Tech)",
                 Email = "technician@fix.com",
                 PasswordHash = HashPassword("technician123"),
                 UserRole = UserRole.Technician.ToString()
             };
+            await context.Users.AddAsync(technicianUser);
+        }
+        else
+        {
+            technicianUser.PasswordHash = HashPassword("technician123");
+            technicianUser.UserRole = UserRole.Technician.ToString();
+        }
 
-            var studentUser = new Users
+        var studentUser = await context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == "student@fix.com");
+        if (studentUser == null)
+        {
+            studentUser = new Users
             {
-                UserName = "student",
+                UserName = "Sarah Connor (Student)",
                 Email = "student@fix.com",
                 PasswordHash = HashPassword("student123"),
                 UserRole = UserRole.User.ToString()
             };
+            await context.Users.AddAsync(studentUser);
+        }
+        else
+        {
+            studentUser.PasswordHash = HashPassword("student123");
+            studentUser.UserRole = UserRole.User.ToString();
+        }
 
-            await context.Users.AddRangeAsync(adminUser, technicianUser, studentUser);
-            await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
             // 2. Seed Sample Issues if not present
             if (!await context.Issues.AnyAsync())
@@ -179,7 +206,6 @@ public static class DataSeeder
                 await context.IssueStatusHistories.AddRangeAsync(histories);
                 await context.SaveChangesAsync();
             }
-        }
     }
 
     /// <summary>
