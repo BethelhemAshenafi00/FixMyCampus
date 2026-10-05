@@ -1,29 +1,15 @@
-using FixMyCampus.Application.DTOs.Issues;
+using FixMyCampus.Application.DTO.Auth;
+using FixMyCampus.Application.DTOs.Auth;
 
 namespace FixMyCampus.Application.Interfaces;
 
-public interface IIssueService
+public interface IAuthService
 {
-    Task<IssueResponse> CreateAsync(
-        CreateIssueRequest request,
-        int reporterId);
+    Task<AuthResponse?> RegisterAsync(
+        RegisterRequest request,
+        CancellationToken cancellationToken);
 
-    Task<IssueResponse?> GetByIdAsync(int id);
-
-    Task<IEnumerable<IssueResponse>> GetAllAsync(
-        string? building = null,
-        string? status = null);
-
-    Task<IEnumerable<IssueResponse>> GetMyIssuesAsync(
-        int reporterId);
-
-    Task AssignAsync(
-        int issueId,
-        int technicianId,
-        int adminId);
-
-    Task UpdateStatusAsync(
-        int issueId,
-        UpdateIssueStatusRequest request,
-        int adminId);
+    Task<AuthResponse?> LoginAsync(
+        LoginRequest request,
+        CancellationToken cancellationToken);
 }

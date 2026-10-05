@@ -1,14 +1,13 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using FixMyCampus.Api.Services;
+using FixMyCampus.Application.Interfaces;
 using FixMyCampus.Domain.Entities;
 using FixMyCampus.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using FixMyCampus.Application.Interfaces;
-using FixMyCampus.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +34,6 @@ if (string.IsNullOrWhiteSpace(jwtSettings.Key)
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

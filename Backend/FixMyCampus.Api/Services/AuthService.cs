@@ -5,6 +5,7 @@ using FixMyCampus.Application.DTO.Auth;
 using FixMyCampus.Application.DTOs.Auth;
 using FixMyCampus.Domain.Entities;
 using FixMyCampus.Domain.Enums;
+using FixMyCampus.Application.Interfaces;
 using FixMyCampus.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
