@@ -1,0 +1,16 @@
+# .NET generated files
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Angular
+node_modules/
+dist/
+.angular/
+
+# Environment files
+.env
