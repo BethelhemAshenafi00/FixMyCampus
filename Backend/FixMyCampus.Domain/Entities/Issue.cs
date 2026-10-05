@@ -1,4 +1,5 @@
 using FixMyCampus.Domain;
+using FixMyCampus.Domain.Enums;
 
 namespace FixMyCampus.Domain.Entities;
 
@@ -10,7 +11,7 @@ public class Issue
 
     public string Description { get; set; } = string.Empty;
 
-    public string Category { get; set; }
+    public IssueCategory Category { get; set; }
 
     public IssueStatus Status { get; set; } = IssueStatus.New;
 
@@ -23,7 +24,7 @@ public class Issue
     // Reporter
     public int ReporterId { get; set; }
 
-    public UserRoles Reporter { get; set; } 
+    public UserRole Reporter { get; set; } 
 
     // Assigned staff
     public int? AssignedStaffId { get; set; }
