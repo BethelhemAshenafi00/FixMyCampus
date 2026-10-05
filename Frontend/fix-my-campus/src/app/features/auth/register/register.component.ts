@@ -63,6 +63,21 @@ import { ToastService } from '../../../core/services/toast.service';
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="department">Department / Program <span class="text-optional">(Optional)</span></label>
+            <div class="input-wrapper">
+              <i class="bi bi-building input-icon"></i>
+              <input
+                type="text"
+                id="department"
+                name="department"
+                class="form-control with-icon"
+                [(ngModel)]="department"
+                placeholder="e.g. Computer Science, Science Block"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="form-label" for="password">Password</label>
             <div class="input-wrapper">
               <i class="bi bi-lock input-icon"></i>
@@ -154,6 +169,12 @@ import { ToastService } from '../../../core/services/toast.service';
       color: var(--slate-500);
     }
 
+    .text-optional {
+      font-weight: 400;
+      color: var(--slate-400);
+      font-size: 0.75rem;
+    }
+
     .alert-error {
       background: var(--rose-50);
       color: var(--rose-600);
@@ -240,6 +261,7 @@ export class RegisterComponent {
 
   fullName = '';
   email = '';
+  department = '';
   password = '';
   loading = signal(false);
   showPassword = signal(false);
@@ -258,7 +280,8 @@ export class RegisterComponent {
     this.authService.register({
       fullName: this.fullName,
       email: this.email,
-      password: this.password
+      password: this.password,
+      department: this.department || undefined
     }).subscribe({
       next: res => {
         this.loading.set(false);

@@ -13,4 +13,7 @@ public class RegisterRequest
 
     [Required, MinLength(8), StringLength(128)]
     public string Password { get; set; } = string.Empty;
+
+    [StringLength(200)]
+    public string? Department { get; set; }
 }

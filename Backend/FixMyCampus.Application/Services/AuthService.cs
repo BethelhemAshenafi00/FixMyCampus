@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using FixMyCampus.Application.DTO.Auth;
@@ -31,12 +30,14 @@ public class AuthService : IAuthService
         RegisterRequest request,
         CancellationToken cancellationToken)
     {
+        // Check if email already exists
         var existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower(), cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
         if (existingUser != null)
             return null; // User already exists
 
+        // Default new users to "User" role (Reporter)
         var passwordHash = HashPassword(request.Password);
 
         var user = new Users
@@ -68,16 +69,17 @@ public class AuthService : IAuthService
         CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower(), cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
         if (user == null)
             return null; // User not found
 
-        if (!VerifyPassword(user, request.Password))
+        if (!VerifyPassword(request.Password, user.PasswordHash))
             return null; // Invalid password
 
         var token = GenerateJwtToken(user);
 
+        // Parse user role from string
         var role = Enum.TryParse<UserRole>(user.UserRole, out var parsedRole)
             ? parsedRole
             : UserRole.User;
@@ -95,33 +97,24 @@ public class AuthService : IAuthService
     /// <summary>Generates a JWT token for the given user.</summary>
     private string GenerateJwtToken(Users user)
     {
-        var jwtSettings = _configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] 
-            ?? _configuration["JwtSettings:SecretKey"] 
-            ?? "FixMyCampus_SuperSecretKey_2026_AtLeast32BytesLong!";
-        var issuer = jwtSettings["Issuer"] 
-            ?? _configuration["JwtSettings:Issuer"] 
-            ?? "FixMyCampus";
-        var audience = jwtSettings["Audience"] 
-            ?? _configuration["JwtSettings:Audience"] 
-            ?? "FixMyCampus.Client";
-        var expirationMinutes = int.TryParse(jwtSettings["ExpirationMinutes"] ?? _configuration["JwtSettings:ExpirationMinutes"], out var exp) 
-            ? exp 
-            : 1440;
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"];
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");
+
+        if (string.IsNullOrEmpty(secretKey))
+            throw new InvalidOperationException("JWT secret key not configured");
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var userRoleStr = user.UserRole ?? UserRole.User.ToString();
-
         var claims = new[]
         {
-            new Claim("sub", user.Id.ToString()),
-            new Claim("email", user.Email),
-            new Claim("name", user.UserName ?? user.Email),
-            new Claim("role", userRoleStr),
-            new Claim(ClaimTypes.Role, userRoleStr),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            new System.Security.Claims.Claim("sub", user.Id.ToString()),
+            new System.Security.Claims.Claim("email", user.Email),
+            new System.Security.Claims.Claim("name", user.UserName),
+            new System.Security.Claims.Claim("role", user.UserRole)
         };
 
         var token = new JwtSecurityToken(
@@ -135,7 +128,7 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    /// <summary>Hashes a password using PBKDF2 with SHA256.</summary>
+    /// <summary>Hashes a password using PBKDF2.</summary>
     private string HashPassword(string password)
     {
         var salt = RandomNumberGenerator.GetBytes(16);
@@ -152,45 +145,26 @@ public class AuthService : IAuthService
         return Convert.ToBase64String(hashWithSalt);
     }
 
-    /// <summary>Verifies a password against various hash schemes for compatibility.</summary>
-    private bool VerifyPassword(Users user, string password)
+    /// <summary>Verifies a password against its hash.</summary>
+    private bool VerifyPassword(string password, string hash)
     {
-        if (string.IsNullOrEmpty(user.PasswordHash))
-            return false;
+        var hashWithSalt = Convert.FromBase64String(hash);
+        var salt = new byte[16];
+        Array.Copy(hashWithSalt, 0, salt, 0, 16);
 
-        // 1. PBKDF2 hash (16-byte salt + 20-byte hash = 36 bytes = 48 chars Base64)
-        try
+        var computedHash = Rfc2898DeriveBytes.Pbkdf2(
+            Encoding.UTF8.GetBytes(password),
+            salt,
+            10000,
+            HashAlgorithmName.SHA256,
+            20);
+
+        for (var i = 0; i < 20; i++)
         {
-            var hashWithSalt = Convert.FromBase64String(user.PasswordHash);
-            if (hashWithSalt.Length == 36)
-            {
-                var salt = new byte[16];
-                Array.Copy(hashWithSalt, 0, salt, 0, 16);
-
-                var computedHash = Rfc2898DeriveBytes.Pbkdf2(
-                    Encoding.UTF8.GetBytes(password),
-                    salt,
-                    10000,
-                    HashAlgorithmName.SHA256,
-                    20);
-
-                if (CryptographicOperations.FixedTimeEquals(computedHash, hashWithSalt.AsSpan(16, 20)))
-                {
-                    return true;
-                }
-            }
-        }
-        catch
-        {
-            // Not a base64 salt+hash
+            if (hashWithSalt[i + 16] != computedHash[i])
+                return false;
         }
 
-        // 2. Plain text match for testing
-        if (string.Equals(user.PasswordHash, password, StringComparison.Ordinal))
-        {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }
