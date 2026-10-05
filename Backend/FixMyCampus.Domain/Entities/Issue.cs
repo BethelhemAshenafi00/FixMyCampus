@@ -1,4 +1,4 @@
-using FixMyCampus.Domain.Enums;
+using FixMyCampus.Domain;
 
 namespace FixMyCampus.Domain.Entities;
 
@@ -14,7 +14,9 @@ public class Issue
 
     public IssueStatus Status { get; set; } = IssueStatus.New;
 
-    public string Location { get; set; } = string.Empty;
+    public string Building { get; set; } = string.Empty;
+
+    public string Room { get; set; } = string.Empty;
 
     public string? ImageUrl { get; set; }
 
@@ -26,13 +28,10 @@ public class Issue
     // Assigned staff
     public int? AssignedStaffId { get; set; }
 
+  public IssuePriority Urgency { get; set; } = IssuePriority.Medium;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UpdatedAt { get; set; }
 
     public DateTime? ResolvedAt { get; set; }
-
-    // Status history
-    public ICollection<IssueStatusHistory> StatusHistory { get; set; }
-        = new List<IssueStatusHistory>();
 }
