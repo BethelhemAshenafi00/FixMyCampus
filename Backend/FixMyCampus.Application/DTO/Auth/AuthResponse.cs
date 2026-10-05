@@ -1,3 +1,5 @@
+using FixMyCampus.Domain.Enums;
+
 namespace FixMyCampus.Application.DTO.Auth;
 
 public class AuthResponse
