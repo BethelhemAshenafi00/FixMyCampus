@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 namespace FixMyCampus.Domain.Entities
 {
     public enum UserRole
@@ -7,3 +8,11 @@ namespace FixMyCampus.Domain.Entities
         Technician = 3,
     }
 }
+=======
+public enum UserRoles
+{
+Admin,
+  Reporter,
+  maintainer,
+}
+>>>>>>> origin/main
