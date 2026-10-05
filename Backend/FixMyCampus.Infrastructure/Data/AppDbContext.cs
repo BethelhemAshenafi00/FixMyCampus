@@ -23,6 +23,11 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Users>()
+            .HasIndex(user => user.Email)
+            .HasDatabaseName("IX_Users_Email")
+            .IsUnique();
+
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(AppDbContext).Assembly);
     }

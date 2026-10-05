@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:5191
+
+### Register
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Campus Reporter",
+  "email": "reporter@example.edu",
+  "password": "ChangeThisPassword123!",
+  "department": "Facilities"
+}
+
+### Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "reporter@example.edu",
+  "password": "ChangeThisPassword123!"
+}
