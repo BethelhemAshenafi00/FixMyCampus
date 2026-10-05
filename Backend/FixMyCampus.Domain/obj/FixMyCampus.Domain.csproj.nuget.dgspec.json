@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj": {}
+    "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj": {
+    "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj",
         "projectName": "FixMyCampus.Domain",
-        "projectPath": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj",
-        "packagesPath": "C:\\Users\\MA\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Domain\\obj\\",
+        "projectPath": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Domain\\FixMyCampus.Domain.csproj",
+        "packagesPath": "C:\\Users\\miki computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\MA\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\miki computer\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
