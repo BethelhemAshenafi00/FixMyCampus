@@ -30,12 +30,22 @@
 3. ng serve
 
 ## Test Accounts & Demo Credentials
-
-Admin username :- admin@mail.com
-Password :  123@Admin
-
-Reporter :- 
-
+                UserName = "admin",
+                Email = "admin@fix.com",
+                PasswordHash = "admin123",
+                UserRole = UserRole.Admin.ToString()
+            
+                UserName = "technician",
+                Email = "technician@fix.com",
+                PasswordHash = "technician123",
+                UserRole = UserRole.Technician.ToString()
+        
+        
+                UserName = "student",
+                Email = "student@fix.com",
+                PasswordHash = "student123",
+                UserRole = UserRole.User.ToString()
+            
 
 
 ## Working Features

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FixMyCampus.Application.Services;
 
-/// <summary>Service for managing issue lifecycle: creation, retrieval, assignment, and status updates.</summary>
 public class IssueService : IIssueService
 {
     private readonly AppDbContext _context;

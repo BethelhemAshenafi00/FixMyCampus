@@ -1,7 +1,10 @@
-using FixMyCampus.Api.Services;
 using FixMyCampus.Application.DTO.Auth;
 using FixMyCampus.Application.DTOs.Auth;
 using FixMyCampus.Application.Interfaces;
+using FixMyCampus.Domain.Entities;
+using FixMyCampus.Infrastructure.Data;
+using FixMyCampus.Application.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace FixMyCampus.Api.Controllers;

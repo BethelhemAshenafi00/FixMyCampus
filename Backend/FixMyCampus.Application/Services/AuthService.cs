@@ -45,7 +45,6 @@ public class AuthService : IAuthService
             UserName = request.FullName,
             Email = request.Email,
             PasswordHash = passwordHash,
-            Department = request.Department,
             UserRole = UserRole.User.ToString()
         };
 
@@ -132,39 +131,38 @@ public class AuthService : IAuthService
     /// <summary>Hashes a password using PBKDF2.</summary>
     private string HashPassword(string password)
     {
-        using (var pbkdf2 = new Rfc2898DeriveBytes(
-            password,
-            new byte[16],
+        var salt = RandomNumberGenerator.GetBytes(16);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(
+            Encoding.UTF8.GetBytes(password),
+            salt,
             10000,
-            System.Security.Cryptography.HashAlgorithmName.SHA256))
-        {
-            byte[] hash = pbkdf2.GetBytes(20);
-            byte[] hashWithSalt = new byte[36];
-            Array.Copy(pbkdf2.Salt, 0, hashWithSalt, 0, 16);
-            Array.Copy(hash, 0, hashWithSalt, 16, 20);
-            return Convert.ToBase64String(hashWithSalt);
-        }
+            HashAlgorithmName.SHA256,
+            20);
+
+        var hashWithSalt = new byte[36];
+        Array.Copy(salt, 0, hashWithSalt, 0, 16);
+        Array.Copy(hash, 0, hashWithSalt, 16, 20);
+        return Convert.ToBase64String(hashWithSalt);
     }
 
     /// <summary>Verifies a password against its hash.</summary>
     private bool VerifyPassword(string password, string hash)
     {
-        byte[] hashWithSalt = Convert.FromBase64String(hash);
-        byte[] salt = new byte[16];
+        var hashWithSalt = Convert.FromBase64String(hash);
+        var salt = new byte[16];
         Array.Copy(hashWithSalt, 0, salt, 0, 16);
 
-        using (var pbkdf2 = new Rfc2898DeriveBytes(
-            password,
+        var computedHash = Rfc2898DeriveBytes.Pbkdf2(
+            Encoding.UTF8.GetBytes(password),
             salt,
             10000,
-            System.Security.Cryptography.HashAlgorithmName.SHA256))
+            HashAlgorithmName.SHA256,
+            20);
+
+        for (var i = 0; i < 20; i++)
         {
-            byte[] computedHash = pbkdf2.GetBytes(20);
-            for (int i = 0; i < 20; i++)
-            {
-                if (hashWithSalt[i + 16] != computedHash[i])
-                    return false;
-            }
+            if (hashWithSalt[i + 16] != computedHash[i])
+                return false;
         }
 
         return true;
