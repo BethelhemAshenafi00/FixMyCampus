@@ -83,19 +83,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\miki computer\\.nuget\\packages\\": {}
+    "C:\\Users\\MA\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Api\\FixMyCampus.Api.csproj",
+      "projectUniqueName": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Api\\FixMyCampus.Api.csproj",
       "projectName": "FixMyCampus.Api",
-      "projectPath": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Api\\FixMyCampus.Api.csproj",
-      "packagesPath": "C:\\Users\\miki computer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\miki computer\\FixMyCampus\\Backend\\FixMyCampus.Api\\obj\\",
+      "projectPath": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Api\\FixMyCampus.Api.csproj",
+      "packagesPath": "C:\\Users\\MA\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\MA\\Desktop\\MyfixCompus\\FixMyCampus\\Backend\\FixMyCampus.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\miki computer\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\MA\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
