@@ -9,5 +9,7 @@ namespace BackendApi.Domain.Entities
         public string ReporterId { get; set; }=string.Empty;
         
         public theStatus Status { get; set; }=theStatus.New;
+        public thePriority Priority { get; set; }=thePriority.Low;
+        public DateTime CreatedAt { get; set; }=DateTime.Now;
     }
 }
