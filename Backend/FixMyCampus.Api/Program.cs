@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
-using FixMyCampus.Api.Services;
 using FixMyCampus.Application.Interfaces;
+using FixMyCampus.Application.Services;
 using FixMyCampus.Domain.Entities;
 using FixMyCampus.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
