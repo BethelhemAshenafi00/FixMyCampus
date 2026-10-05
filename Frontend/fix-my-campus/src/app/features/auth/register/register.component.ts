@@ -63,21 +63,22 @@ import { ToastService } from '../../../core/services/toast.service';
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="role">Role</label>
+            <label class="form-label" for="accountType">Account Type</label>
             <div class="input-wrapper">
               <i class="bi bi-badge input-icon"></i>
               <select 
-                id="role"
-                name="role" 
+                id="accountType"
+                name="accountType" 
                 class="form-select with-icon" 
                 [(ngModel)]="selectedRole"
                 required
               >
-                <option value="" disabled>Select your role</option>
-                <option value="User">Student / Reporter</option>
-                <option value="Technician">Staff / Technician</option>
+                <option value="" disabled>Select account type</option>
+                <option value="User">Student</option>
+                <option value="Technician">Staff </option>
               </select>
             </div>
+            <p class="form-hint">Staff accounts must be created by administrators</p>
           </div>
 
           <div class="form-group">
@@ -191,6 +192,14 @@ import { ToastService } from '../../../core/services/toast.service';
       font-weight: 400;
       color: var(--slate-400);
       font-size: 0.75rem;
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--slate-500);
+      margin-top: 0.375rem;
+      margin-left: 0;
+      font-style: italic;
     }
 
     .alert-error {

@@ -47,83 +47,83 @@ import { IssueResponse } from '../../core/models/issue.models';
               <i class="bi bi-plus-circle"></i> Add Technician
             </button>
           </div>
+        </div>
+      }
 
-          <!-- Create Technician Modal -->
-          @if (showCreateTechnicianModal()) {
-            <div class="modal-overlay" (click)="toggleCreateTechnicianModal()">
-              <div class="modal-content" (click)="$event.stopPropagation()">
-                <div class="modal-header">
-                  <h3>Create New Technician</h3>
-                  <button class="modal-close" (click)="toggleCreateTechnicianModal()">
-                    <i class="bi bi-x-lg"></i>
-                  </button>
-                </div>
-
-                @if (technicianErrorMessage()) {
-                  <div class="alert-error">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <span>{{ technicianErrorMessage() }}</span>
-                  </div>
-                }
-
-                <form (ngSubmit)="submitCreateTechnician()" class="modal-form">
-                  <div class="form-group">
-                    <label class="form-label" for="techName">Full Name</label>
-                    <input
-                      type="text"
-                      id="techName"
-                      name="techName"
-                      class="form-control"
-                      [(ngModel)]="technicianName"
-                      required
-                      placeholder="e.g. John Smith"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label" for="techEmail">Email</label>
-                    <input
-                      type="email"
-                      id="techEmail"
-                      name="techEmail"
-                      class="form-control"
-                      [(ngModel)]="technicianEmail"
-                      required
-                      email
-                      placeholder="tech@university.edu"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label" for="techPassword">Password</label>
-                    <input
-                      type="password"
-                      id="techPassword"
-                      name="techPassword"
-                      class="form-control"
-                      [(ngModel)]="technicianPassword"
-                      required
-                      minlength="6"
-                      placeholder="At least 6 characters"
-                    />
-                  </div>
-
-                  <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" (click)="toggleCreateTechnicianModal()">
-                      Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" [disabled]="technicianLoading()">
-                      @if (technicianLoading()) {
-                        <span class="spinner-sm"></span> Creating...
-                      } @else {
-                        Create Technician
-                      }
-                    </button>
-                  </div>
-                </form>
-              </div>
+      <!-- Create Technician Modal (moved outside admin-section for proper z-index) -->
+      @if (showCreateTechnicianModal()) {
+        <div class="modal-overlay" (click)="toggleCreateTechnicianModal()">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h3>Create New Technician</h3>
+              <button class="modal-close" (click)="toggleCreateTechnicianModal()">
+                <i class="bi bi-x-lg"></i>
+              </button>
             </div>
-          }
+
+            @if (technicianErrorMessage()) {
+              <div class="alert-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>{{ technicianErrorMessage() }}</span>
+              </div>
+            }
+
+            <form (ngSubmit)="submitCreateTechnician()" class="modal-form">
+              <div class="form-group">
+                <label class="form-label" for="techName">Full Name</label>
+                <input
+                  type="text"
+                  id="techName"
+                  name="techName"
+                  class="form-control"
+                  [(ngModel)]="technicianName"
+                  required
+                  placeholder="e.g. John Smith"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="techEmail">Email</label>
+                <input
+                  type="email"
+                  id="techEmail"
+                  name="techEmail"
+                  class="form-control"
+                  [(ngModel)]="technicianEmail"
+                  required
+                  email
+                  placeholder="tech@university.edu"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="techPassword">Password</label>
+                <input
+                  type="password"
+                  id="techPassword"
+                  name="techPassword"
+                  class="form-control"
+                  [(ngModel)]="technicianPassword"
+                  required
+                  minlength="6"
+                  placeholder="At least 6 characters"
+                />
+              </div>
+
+              <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" (click)="toggleCreateTechnicianModal()">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="technicianLoading()">
+                  @if (technicianLoading()) {
+                    <span class="spinner-sm"></span> Creating...
+                  } @else {
+                    Create Technician
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       }
 
@@ -579,7 +579,8 @@ import { IssueResponse } from '../../core/models/issue.models';
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
+      z-index: 50000;
+      padding: 1rem;
     }
 
     .modal-content {
@@ -587,9 +588,11 @@ import { IssueResponse } from '../../core/models/issue.models';
       border-radius: var(--radius-lg);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       max-width: 500px;
-      width: 90%;
+      width: 100%;
       max-height: 90vh;
       overflow-y: auto;
+      position: relative;
+      z-index: 50001;
     }
 
     .modal-header {
@@ -634,6 +637,8 @@ import { IssueResponse } from '../../core/models/issue.models';
       border-top: 1px solid var(--slate-200);
       padding: 1.5rem 2rem;
       margin-top: 1rem;
+      position: relative;
+      z-index: 50002;
     }
 
     .alert-error {
