@@ -63,6 +63,24 @@ import { ToastService } from '../../../core/services/toast.service';
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="role">Role</label>
+            <div class="input-wrapper">
+              <i class="bi bi-badge input-icon"></i>
+              <select 
+                id="role"
+                name="role" 
+                class="form-select with-icon" 
+                [(ngModel)]="selectedRole"
+                required
+              >
+                <option value="" disabled>Select your role</option>
+                <option value="User">Student / Reporter</option>
+                <option value="Technician">Staff / Technician</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="form-label" for="department">Department / Program <span class="text-optional">(Optional)</span></label>
             <div class="input-wrapper">
               <i class="bi bi-building input-icon"></i>
@@ -210,6 +228,15 @@ import { ToastService } from '../../../core/services/toast.service';
       padding-right: 2.75rem;
     }
 
+    .form-select.with-icon {
+      padding-left: 2.5rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
     .input-action-btn {
       position: absolute;
       right: 0.75rem;
@@ -263,6 +290,7 @@ export class RegisterComponent {
   email = '';
   department = '';
   password = '';
+  selectedRole = ''; // New role property
   loading = signal(false);
   showPassword = signal(false);
   errorMessage = signal<string | null>(null);

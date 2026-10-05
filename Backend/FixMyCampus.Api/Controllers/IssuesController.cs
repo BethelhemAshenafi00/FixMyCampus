@@ -40,8 +40,10 @@ public sealed class IssuesController(IIssueService issueService) : ControllerBas
 
  
     [HttpGet]
+    [Authorize(Roles = "Admin,Technician")]
     [ProducesResponseType<IEnumerable<IssueResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<IssueResponse>>> GetAll(
         [FromQuery] string? building = null,
         [FromQuery] string? status = null)

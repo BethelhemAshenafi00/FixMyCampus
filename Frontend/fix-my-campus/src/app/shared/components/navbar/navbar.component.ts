@@ -29,10 +29,12 @@ import { AuthService } from '../../../core/services/auth.service';
               <span>Dashboard</span>
             </a>
             
-            <a routerLink="/issues" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
-              <i class="bi bi-list-task"></i>
-              <span>All Issues</span>
-            </a>
+            @if (authService.isAdmin() || authService.isTechnician()) {
+              <a routerLink="/issues" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
+                <i class="bi bi-list-task"></i>
+                <span>All Issues</span>
+              </a>
+            }
 
             <a routerLink="/issues/my" routerLinkActive="active" class="nav-link">
               <i class="bi bi-person-lines-fill"></i>
@@ -83,9 +85,11 @@ import { AuthService } from '../../../core/services/auth.service';
             <a routerLink="/dashboard" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-nav-link">
               <i class="bi bi-grid-1x2-fill"></i> Dashboard
             </a>
-            <a routerLink="/issues" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-nav-link">
-              <i class="bi bi-list-task"></i> All Issues
-            </a>
+            @if (authService.isAdmin() || authService.isTechnician()) {
+              <a routerLink="/issues" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-nav-link">
+                <i class="bi bi-list-task"></i> All Issues
+              </a>
+            }
             <a routerLink="/issues/my" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-nav-link">
               <i class="bi bi-person-lines-fill"></i> My Reports
             </a>

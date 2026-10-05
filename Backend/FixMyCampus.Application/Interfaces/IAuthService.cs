@@ -12,4 +12,8 @@ public interface IAuthService
     Task<AuthResponse?> LoginAsync(
         LoginRequest request,
         CancellationToken cancellationToken);
+
+    Task<AuthResponse?> CreateTechnicianAsync(
+        CreateTechnicianRequest request,
+        CancellationToken cancellationToken);
 }

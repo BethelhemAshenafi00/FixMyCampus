@@ -721,6 +721,7 @@ export class IssueListComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   allIssues = signal<IssueResponse[]>([]);
   loading = signal(true);
@@ -788,6 +789,12 @@ export class IssueListComponent implements OnInit {
   }
 
   loadIssues(): void {
+    // Students are not allowed to view all issues, redirect to My Issues
+    if (this.authService.isStudent()) {
+      this.router.navigate(['/issues/my']);
+      return;
+    }
+
     this.loading.set(true);
     this.issueService.getIssues(this.selectedBuilding || undefined).subscribe({
       next: issues => {

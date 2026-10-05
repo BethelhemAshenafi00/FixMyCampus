@@ -1,16 +1,18 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { IssueService } from '../../core/services/issue.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 import { DashboardResponse } from '../../core/models/dashboard.models';
 import { IssueResponse } from '../../core/models/issue.models';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="dashboard-page animate-fade-in">
       <!-- Welcome Banner -->
@@ -30,6 +32,100 @@ import { IssueResponse } from '../../core/models/issue.models';
           </div>
         </div>
       </div>
+
+      <!-- Admin Only: Create Technician Section -->
+      @if (authService.isAdmin()) {
+        <div class="admin-section glass-card">
+          <div class="admin-header">
+            <div class="admin-title-block">
+              <h2 class="admin-section-title">
+                <i class="bi bi-person-gear"></i> Staff Management
+              </h2>
+              <p class="admin-section-subtitle">Create and manage technician accounts</p>
+            </div>
+            <button class="btn btn-secondary" (click)="toggleCreateTechnicianModal()">
+              <i class="bi bi-plus-circle"></i> Add Technician
+            </button>
+          </div>
+
+          <!-- Create Technician Modal -->
+          @if (showCreateTechnicianModal()) {
+            <div class="modal-overlay" (click)="toggleCreateTechnicianModal()">
+              <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Create New Technician</h3>
+                  <button class="modal-close" (click)="toggleCreateTechnicianModal()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                @if (technicianErrorMessage()) {
+                  <div class="alert-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>{{ technicianErrorMessage() }}</span>
+                  </div>
+                }
+
+                <form (ngSubmit)="submitCreateTechnician()" class="modal-form">
+                  <div class="form-group">
+                    <label class="form-label" for="techName">Full Name</label>
+                    <input
+                      type="text"
+                      id="techName"
+                      name="techName"
+                      class="form-control"
+                      [(ngModel)]="technicianName"
+                      required
+                      placeholder="e.g. John Smith"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="techEmail">Email</label>
+                    <input
+                      type="email"
+                      id="techEmail"
+                      name="techEmail"
+                      class="form-control"
+                      [(ngModel)]="technicianEmail"
+                      required
+                      email
+                      placeholder="tech@university.edu"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="techPassword">Password</label>
+                    <input
+                      type="password"
+                      id="techPassword"
+                      name="techPassword"
+                      class="form-control"
+                      [(ngModel)]="technicianPassword"
+                      required
+                      minlength="6"
+                      placeholder="At least 6 characters"
+                    />
+                  </div>
+
+                  <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" (click)="toggleCreateTechnicianModal()">
+                      Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="technicianLoading()">
+                      @if (technicianLoading()) {
+                        <span class="spinner-sm"></span> Creating...
+                      } @else {
+                        Create Technician
+                      }
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          }
+        </div>
+      }
 
       <!-- KPI Stat Cards -->
       <div class="stats-grid">
@@ -441,16 +537,147 @@ import { IssueResponse } from '../../core/models/issue.models';
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Admin Section Styles */
+    .admin-section {
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .admin-section-subtitle {
+      font-size: 0.875rem;
+      color: var(--slate-500);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--slate-500);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .modal-close:hover {
+      color: var(--slate-700);
+    }
+
+    .modal-form {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      border-top: 1px solid var(--slate-200);
+      padding: 1.5rem 2rem;
+      margin-top: 1rem;
+    }
+
+    .alert-error {
+      background: var(--rose-50);
+      color: var(--rose-600);
+      border: 1px solid #fecdd3;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 2rem 1rem 2rem;
+    }
+
+    .spinner-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 0.5rem;
+    }
   `]
 })
 export class DashboardComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly dashboardService = inject(DashboardService);
   private readonly issueService = inject(IssueService);
+  private readonly toast = inject(ToastService);
 
   stats = signal<DashboardResponse | null>(null);
   recentIssues = signal<IssueResponse[]>([]);
   loading = signal(true);
+  
+  // Technician creation
+  showCreateTechnicianModal = signal(false);
+  technicianName = '';
+  technicianEmail = '';
+  technicianPassword = '';
+  technicianLoading = signal(false);
+  technicianErrorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadData();
@@ -500,9 +727,54 @@ export class DashboardComponent implements OnInit {
   }
 
   formatDate(dateStr: string): string {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return new Date(dateStr).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  }
+
+  toggleCreateTechnicianModal(): void {
+    this.showCreateTechnicianModal.update(v => !v);
+    if (!this.showCreateTechnicianModal()) {
+      this.resetTechnicianForm();
+    }
+  }
+
+  resetTechnicianForm(): void {
+    this.technicianName = '';
+    this.technicianEmail = '';
+    this.technicianPassword = '';
+    this.technicianErrorMessage.set(null);
+  }
+
+  submitCreateTechnician(): void {
+    if (!this.technicianName || !this.technicianEmail || !this.technicianPassword) {
+      this.technicianErrorMessage.set('Please fill in all fields.');
+      return;
+    }
+
+    this.technicianLoading.set(true);
+    this.technicianErrorMessage.set(null);
+
+    // Call the auth service to create technician
+    this.authService.createTechnician({
+      fullName: this.technicianName,
+      email: this.technicianEmail,
+      password: this.technicianPassword
+    }).subscribe({
+      next: res => {
+        this.technicianLoading.set(false);
+        this.toast.success('Technician created!', `${res.fullName} has been added to the system.`);
+        this.toggleCreateTechnicianModal();
+      },
+      error: err => {
+        this.technicianLoading.set(false);
+        const message = err?.error?.title || 'Failed to create technician. Email may already exist.';
+        this.technicianErrorMessage.set(message);
+      }
+    });
   }
 }
 

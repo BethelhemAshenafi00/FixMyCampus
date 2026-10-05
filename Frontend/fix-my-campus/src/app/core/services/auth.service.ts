@@ -53,6 +53,10 @@ export class AuthService {
     return this.currentUser()?.token ?? null;
   }
 
+  createTechnician(request: { fullName: string; email: string; password: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/technician`, request);
+  }
+
   private setSession(auth: AuthResponse): void {
     if (this.isBrowser) {
       localStorage.setItem(AUTH_USER_KEY, JSON.stringify(auth));

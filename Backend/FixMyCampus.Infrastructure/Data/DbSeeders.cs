@@ -189,7 +189,7 @@ public static class DataSeeder
     {
         byte[] salt = RandomNumberGenerator.GetBytes(16);
         byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
-            password,
+            System.Text.Encoding.UTF8.GetBytes(password),
             salt,
             10000,
             HashAlgorithmName.SHA256,

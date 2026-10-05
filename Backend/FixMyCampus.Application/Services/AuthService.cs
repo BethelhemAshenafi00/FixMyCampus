@@ -94,11 +94,48 @@ public class AuthService : IAuthService
         };
     }
 
+    /// <summary>Creates a new technician account (admin only).</summary>
+    public async Task<AuthResponse?> CreateTechnicianAsync(
+        CreateTechnicianRequest request,
+        CancellationToken cancellationToken)
+    {
+        // Check if email already exists
+        var existingUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
+
+        if (existingUser != null)
+            return null; // User already exists
+
+        var passwordHash = HashPassword(request.Password);
+
+        var user = new Users
+        {
+            UserName = request.FullName,
+            Email = request.Email,
+            PasswordHash = passwordHash,
+            UserRole = UserRole.Technician.ToString()
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var token = GenerateJwtToken(user);
+
+        return new AuthResponse
+        {
+            UserId = user.Id,
+            FullName = user.UserName,
+            Email = user.Email,
+            Role = UserRole.Technician,
+            Token = token
+        };
+    }
+
     /// <summary>Generates a JWT token for the given user.</summary>
     private string GenerateJwtToken(Users user)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings["SecretKey"];
+        var jwtSettings = _configuration.GetSection("Jwt");
+        var secretKey = jwtSettings["Key"];
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
         var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");
