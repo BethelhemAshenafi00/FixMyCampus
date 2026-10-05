@@ -10,7 +10,7 @@ namespace FixMyCampus.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class AuthController(IAuthService authService) : ControllerBase
 {
-    /// <summary>Registers a new user account.</summary>
+    
     [HttpPost("register")]
     [ProducesResponseType<AuthResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
@@ -28,7 +28,7 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
             : Ok(response);
     }
 
-    /// <summary>Authenticates a user and returns a bearer token.</summary>
+  
     [HttpPost("login")]
     [ProducesResponseType<AuthResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
